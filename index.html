@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0c0c0c">
+    <title>生日倒计时</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+  </head>
+  <body>
+    <main class="page" aria-live="polite">
+
+      <p class="title" id="main-title">距你的生日还有</p>
+      <h1 class="birthday-title" id="birthday-title">生日快乐</h1>
+
+      <div class="countdown" id="countdown" aria-label="生日倒计时">
+        <div class="time-unit">
+          <span class="num" id="days">--</span>
+          <span class="unit">天</span>
+        </div>
+        <span class="sep" aria-hidden="true">·</span>
+        <div class="time-unit">
+          <span class="num" id="hours">--</span>
+          <span class="unit">时</span>
+        </div>
+        <span class="sep" aria-hidden="true">·</span>
+        <div class="time-unit">
+          <span class="num" id="minutes">--</span>
+          <span class="unit">分</span>
+        </div>
+        <span class="sep" aria-hidden="true">·</span>
+        <div class="time-unit">
+          <span class="num" id="seconds">--</span>
+          <span class="unit">秒</span>
+        </div>
+      </div>
+
+      <p class="message" id="main-message"></p>
+
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
