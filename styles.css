@@ -112,7 +112,19 @@ body::before {
 .is-birthday .birthday-title { display: block; }
 .is-birthday .message { color: #555; margin-top: 0; }
 
-@media (max-width: 480px) {
+@media (max-width: 540px) {
   .sep { display: none; }
-  .time-unit { padding: 0 clamp(8px, 4vw, 20px); }
+  .countdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 0;
+    width: 100%;
+    max-width: 320px;
+  }
+  .time-unit {
+    padding: 16px 0;
+  }
+  .time-unit .num {
+    font-size: clamp(3.5rem, 22vw, 6rem);
+  }
 }
