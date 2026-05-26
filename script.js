@@ -1,4 +1,5 @@
 (function () {
+  // ── Countdown ──
   const config = window.BIRTHDAY_SITE || {};
   const target = new Date(config.birthdayDate);
 
@@ -40,15 +41,28 @@
 
   function tick() {
     const diff = target.getTime() - Date.now();
-
     if (Number.isNaN(target.getTime()) || diff <= 0) {
       showBirthday();
       return;
     }
-
     showCountdown(diff);
     setTimeout(tick, 1000);
   }
 
   tick();
+
+  // ── Page 2 fade-in via Intersection Observer ──
+  const page2Content = document.querySelector(".page-2-content");
+  if (page2Content) {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          page2Content.classList.add("visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(page2Content);
+  }
 }());

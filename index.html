@@ -9,36 +9,65 @@
     <script src="config.js"></script>
   </head>
   <body>
-    <main class="page" aria-live="polite">
+    <div class="scroll-container">
 
-      <p class="title" id="main-title">距你的生日还有</p>
-      <h1 class="birthday-title" id="birthday-title">生日快乐</h1>
+      <!-- Page 1: Countdown -->
+      <section class="page page-1" aria-live="polite">
+        <p class="title" id="main-title">距你的生日还有</p>
+        <h1 class="birthday-title" id="birthday-title">生日快乐</h1>
 
-      <div class="countdown" id="countdown" aria-label="生日倒计时">
-        <div class="time-unit">
-          <span class="num" id="days">--</span>
-          <span class="unit">天</span>
+        <div class="countdown" id="countdown" aria-label="生日倒计时">
+          <div class="time-unit">
+            <span class="num" id="days">--</span>
+            <span class="unit">天</span>
+          </div>
+          <span class="sep" aria-hidden="true">·</span>
+          <div class="time-unit">
+            <span class="num" id="hours">--</span>
+            <span class="unit">时</span>
+          </div>
+          <span class="sep" aria-hidden="true">·</span>
+          <div class="time-unit">
+            <span class="num" id="minutes">--</span>
+            <span class="unit">分</span>
+          </div>
+          <span class="sep" aria-hidden="true">·</span>
+          <div class="time-unit">
+            <span class="num" id="seconds">--</span>
+            <span class="unit">秒</span>
+          </div>
         </div>
-        <span class="sep" aria-hidden="true">·</span>
-        <div class="time-unit">
-          <span class="num" id="hours">--</span>
-          <span class="unit">时</span>
-        </div>
-        <span class="sep" aria-hidden="true">·</span>
-        <div class="time-unit">
-          <span class="num" id="minutes">--</span>
-          <span class="unit">分</span>
-        </div>
-        <span class="sep" aria-hidden="true">·</span>
-        <div class="time-unit">
-          <span class="num" id="seconds">--</span>
-          <span class="unit">秒</span>
-        </div>
-      </div>
 
-      <p class="message" id="main-message"></p>
+        <p class="message" id="main-message"></p>
 
-    </main>
+        <div class="scroll-hint" aria-hidden="true">
+          <span class="scroll-hint-line"></span>
+        </div>
+      </section>
+
+      <!-- Page 2: To-do list -->
+      <section class="page page-2">
+        <div class="page-2-content">
+          <p class="page-label">待完成</p>
+          <h2 class="page-2-title">一些想做的事</h2>
+          <ul class="todo-list">
+            <li class="todo-item">
+              <span class="todo-dot"></span>
+              <span class="todo-text">在这里写下你想对他说的话</span>
+            </li>
+            <li class="todo-item">
+              <span class="todo-dot"></span>
+              <span class="todo-text">或者一起想做的事</span>
+            </li>
+            <li class="todo-item">
+              <span class="todo-dot"></span>
+              <span class="todo-text">又或者一个小小的约定</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
