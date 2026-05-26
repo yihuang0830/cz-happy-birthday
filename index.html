@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0c0c0c">
+    <meta name="theme-color" content="#ffffff">
     <title>生日倒计时</title>
     <link rel="stylesheet" href="styles.css">
     <script src="config.js"></script>
@@ -45,29 +45,111 @@
         </div>
       </section>
 
-      <!-- Page 2: To-do list -->
+      <!-- Page 2: Two-column todo -->
       <section class="page page-2">
         <div class="page-2-content">
-          <p class="page-label">待完成</p>
-          <h2 class="page-2-title">一些想做的事</h2>
-          <ul class="todo-list">
-            <li class="todo-item">
-              <span class="todo-dot"></span>
-              <span class="todo-text">在这里写下你想对他说的话</span>
-            </li>
-            <li class="todo-item">
-              <span class="todo-dot"></span>
-              <span class="todo-text">或者一起想做的事</span>
-            </li>
-            <li class="todo-item">
-              <span class="todo-dot"></span>
-              <span class="todo-text">又或者一个小小的约定</span>
-            </li>
-          </ul>
+          <p class="page-label">我们想做的事</p>
+
+          <div class="todo-columns">
+            <div class="todo-col">
+              <h3 class="col-name">e</h3>
+              <ul class="todo-list" id="todo-list-e"></ul>
+              <form class="todo-form" data-owner="e" autocomplete="off">
+                <input class="todo-input" type="text" placeholder="添加…" maxlength="60" />
+                <button class="todo-submit" type="submit">+</button>
+              </form>
+            </div>
+
+            <div class="col-divider" aria-hidden="true"></div>
+
+            <div class="todo-col">
+              <h3 class="col-name">jerry</h3>
+              <ul class="todo-list" id="todo-list-jerry"></ul>
+              <form class="todo-form" data-owner="jerry" autocomplete="off">
+                <input class="todo-input" type="text" placeholder="添加…" maxlength="60" />
+                <button class="todo-submit" type="submit">+</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="scroll-hint" aria-hidden="true">
+          <span class="scroll-hint-line"></span>
+        </div>
+      </section>
+
+      <!-- Page 3: Gift unlock -->
+      <section class="page page-3">
+        <div class="page-3-content">
+          <p class="page-label">礼物解锁</p>
+
+          <div class="gifts">
+
+            <div class="gift-card locked" id="gift-0">
+              <p class="gift-num">礼物 01</p>
+              <div class="gift-lock-state">
+                <svg class="gift-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="11" width="14" height="10" rx="1"/>
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                </svg>
+                <p class="gift-unlock-date" id="gift-date-0">6月25日解锁</p>
+              </div>
+              <div class="gift-open-state">
+                <svg class="gift-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 12 20 22 4 22 4 12"/>
+                  <rect x="2" y="7" width="20" height="5"/>
+                  <line x1="12" y1="22" x2="12" y2="7"/>
+                  <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                  <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                </svg>
+                <p class="gift-unlocked-hint">已解锁</p>
+              </div>
+            </div>
+
+            <div class="gift-card locked" id="gift-1">
+              <p class="gift-num">礼物 02</p>
+              <div class="gift-lock-state">
+                <svg class="gift-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="11" width="14" height="10" rx="1"/>
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                </svg>
+                <p class="gift-unlock-date" id="gift-date-1">8月 · 待定解锁</p>
+              </div>
+              <div class="gift-open-state">
+                <svg class="gift-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 12 20 22 4 22 4 12"/>
+                  <rect x="2" y="7" width="20" height="5"/>
+                  <line x1="12" y1="22" x2="12" y2="7"/>
+                  <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                  <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                </svg>
+                <p class="gift-unlocked-hint">已解锁</p>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
     </div>
-    <script src="script.js"></script>
+
+    <button class="sidebar-trigger" id="sidebar-trigger" aria-label="已完成">已完成</button>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">已完成</span>
+        <button class="sidebar-close" id="sidebar-close" aria-label="关闭">×</button>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-owner">e</p>
+        <ul class="completed-list" id="completed-list-e"></ul>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-owner">jerry</p>
+        <ul class="completed-list" id="completed-list-jerry"></ul>
+      </div>
+    </aside>
+
+    <script type="module" src="script.js"></script>
   </body>
 </html>
