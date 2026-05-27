@@ -441,8 +441,67 @@ body::before {
   letter-spacing: 0.04em;
 }
 
-/* ── Page 3: Gifts ── */
-.page-3 { justify-content: center; }
+/* ── Page 3: Photos ── */
+.page-photos {
+  justify-content: flex-start;
+  overflow-y: auto;
+  padding-top: 64px;
+  padding-bottom: 64px;
+  align-items: center;
+}
+
+.page-photos-content {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  width: min(900px, 100%);
+}
+.page-photos-content.visible { opacity: 1; transform: translateY(0); }
+
+.photo-wall {
+  columns: 3;
+  column-gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.photo-item {
+  break-inside: avoid;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.photo-item img {
+  width: 100%;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.photo-item:hover img {
+  transform: scale(1.02);
+}
+
+.photo-empty {
+  font-size: 0.78rem;
+  color: #ddd;
+  letter-spacing: 0.06em;
+  margin: 0;
+  text-align: center;
+  padding: 60px 0;
+}
+
+@media (max-width: 760px) {
+  .photo-wall { columns: 2; }
+}
+
+@media (max-width: 400px) {
+  .photo-wall { columns: 2; column-gap: 4px; }
+  .photo-item { margin-bottom: 4px; }
+}
+
+/* ── Page 4: Gifts ── */
+.page-3, .page-4 { justify-content: center; }
 
 .page-3-content {
   opacity: 0;

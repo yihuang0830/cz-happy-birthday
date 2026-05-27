@@ -158,6 +158,30 @@ new IntersectionObserver(([e]) => {
   sidebarTrigger.classList.toggle("visible", e.isIntersecting);
 }, { threshold: 0.5 }).observe(document.querySelector(".page-2"));
 
+// ── Photo wall ──
+const photos = config.photos || [];
+const wallEl = document.getElementById("photo-wall");
+if (photos.length > 0) {
+  wallEl.innerHTML = "";
+  photos.forEach(src => {
+    const div = document.createElement("div");
+    div.className = "photo-item";
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = "";
+    img.loading = "lazy";
+    div.appendChild(img);
+    wallEl.appendChild(div);
+  });
+}
+
+const pagePhotosContent = document.querySelector(".page-photos-content");
+if (pagePhotosContent) {
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) pagePhotosContent.classList.add("visible");
+  }, { threshold: 0.1 }).observe(pagePhotosContent);
+}
+
 // ── Gift unlock ──
 (config.gifts || []).forEach((gift, i) => {
   const card = document.getElementById(`gift-${i}`);
