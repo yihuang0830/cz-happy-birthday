@@ -148,8 +148,15 @@ initTodoCol("jerry");
 });
 
 const sidebar = document.getElementById("sidebar");
+const sidebarTrigger = document.getElementById("sidebar-trigger");
+
 document.getElementById("sidebar-trigger").addEventListener("click", () => sidebar.classList.add("open"));
 document.getElementById("sidebar-close").addEventListener("click", () => sidebar.classList.remove("open"));
+
+// 只在第二页显示「已完成」按钮
+new IntersectionObserver(([e]) => {
+  sidebarTrigger.classList.toggle("visible", e.isIntersecting);
+}, { threshold: 0.5 }).observe(document.querySelector(".page-2"));
 
 // ── Gift unlock ──
 (config.gifts || []).forEach((gift, i) => {
