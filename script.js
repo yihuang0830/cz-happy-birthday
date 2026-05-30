@@ -182,6 +182,32 @@ if (pagePhotosContent) {
   }, { threshold: 0.1 }).observe(pagePhotosContent);
 }
 
+// ── Lightbox ──
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+
+function openLightbox(src) {
+  lightboxImg.src = src;
+  lightbox.classList.add("open");
+  lightbox.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeLightbox() {
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+document.querySelector(".lightbox-backdrop").addEventListener("click", closeLightbox);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
+
+document.getElementById("photo-wall").addEventListener("click", (e) => {
+  const img = e.target.closest(".photo-item img");
+  if (img) openLightbox(img.src);
+});
+
 // ── Gift unlock ──
 (config.gifts || []).forEach((gift, i) => {
   const card = document.getElementById(`gift-${i}`);
