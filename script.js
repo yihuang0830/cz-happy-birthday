@@ -260,6 +260,49 @@ musicBtn.addEventListener("click", () => {
   document.addEventListener(evt, startMusic, { once: true, passive: true })
 );
 
+// ── Jerry interactive ──
+const jerrySprite = document.getElementById("jerry-sprite");
+const jerryHint = document.getElementById("jerry-hint");
+const jerryMood = document.getElementById("jerry-mood");
+
+const jerryStates = [
+  { src: "assets/jerry/wave.png",     hint: "你好你好！",       mood: "心情值 ❤️❤️❤️❤️❤️" },
+  { src: "assets/jerry/surprise.png", hint: "哎呀～",           mood: "心情值 ❤️❤️❤️❤️❤️" },
+  { src: "assets/jerry/think.png",    hint: "让我想想…",        mood: "心情值 ❤️❤️❤️❤️" },
+  { src: "assets/jerry/sleep.png",    hint: "z z z…",           mood: "心情值 ❤️❤️❤️" },
+  { src: "assets/jerry/love.png",     hint: "生日快乐！",       mood: "心情值 ❤️❤️❤️❤️❤️" },
+];
+let jerryIdx = -1;
+let jerryTimer = null;
+
+const jerryWrap = jerrySprite ? jerrySprite.closest(".jerry-sprite-wrap") : null;
+if (jerryWrap) {
+  jerryWrap.addEventListener("click", () => {
+    jerryIdx = (jerryIdx + 1) % jerryStates.length;
+    const state = jerryStates[jerryIdx];
+    jerrySprite.src = state.src;
+    jerryHint.textContent = state.hint;
+    jerryMood.textContent = state.mood;
+    jerrySprite.classList.remove("bounce");
+    void jerrySprite.offsetWidth;
+    jerrySprite.classList.add("bounce");
+    clearTimeout(jerryTimer);
+    jerryTimer = setTimeout(() => {
+      jerrySprite.src = "assets/jerry/idle.png";
+      jerryHint.textContent = "点我试试";
+      jerryMood.textContent = "心情值 ❤️❤️❤️❤️❤️";
+      jerryIdx = -1;
+    }, 3000);
+  });
+}
+
+const jerryContent = document.querySelector(".page-jerry-content");
+if (jerryContent) {
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) jerryContent.classList.add("visible");
+  }, { threshold: 0.1 }).observe(jerryContent);
+}
+
 // ── Page 3 fade-in ──
 const page3Content = document.querySelector(".page-3-content");
 if (page3Content) {
