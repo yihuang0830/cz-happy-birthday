@@ -652,6 +652,37 @@ body::before {
 .gift-card.unlocked { border-color: #ddd; }
 .gift-card.unlocked .gift-icon { color: #aaa; }
 
+/* ── Music button ── */
+.music-btn {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  z-index: 50;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  color: #bbb;
+}
+.music-btn:hover { border-color: #ccc; box-shadow: 0 4px 16px rgba(0,0,0,0.1); color: #888; }
+.music-btn.playing { color: #888; }
+.music-icon { width: 16px; height: 16px; }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.music-btn.playing .music-icon-play {
+  animation: spin-slow 4s linear infinite;
+}
+
 /* ── Mobile ── */
 @media (max-width: 540px) {
   .sep { display: none; }

@@ -225,6 +225,41 @@ document.getElementById("photo-wall").addEventListener("click", (e) => {
   }
 });
 
+// ── Background music ──
+const audio = document.getElementById("bg-music");
+const musicBtn = document.getElementById("music-btn");
+const iconPlay = musicBtn.querySelector(".music-icon-play");
+const iconPause = musicBtn.querySelector(".music-icon-pause");
+let musicStarted = false;
+
+function setPlaying(playing) {
+  musicBtn.classList.toggle("playing", playing);
+  iconPlay.style.display = playing ? "" : "none";
+  iconPause.style.display = playing ? "none" : "";
+}
+
+function startMusic() {
+  if (musicStarted) return;
+  musicStarted = true;
+  audio.volume = 0.5;
+  audio.play().then(() => setPlaying(true)).catch(() => {});
+}
+
+musicBtn.addEventListener("click", () => {
+  if (audio.paused) {
+    musicStarted = true;
+    audio.play().then(() => setPlaying(true)).catch(() => {});
+  } else {
+    audio.pause();
+    setPlaying(false);
+  }
+});
+
+// 首次交互自动开始
+["click", "touchstart", "keydown", "scroll"].forEach(evt =>
+  document.addEventListener(evt, startMusic, { once: true, passive: true })
+);
+
 // ── Page 3 fade-in ──
 const page3Content = document.querySelector(".page-3-content");
 if (page3Content) {
