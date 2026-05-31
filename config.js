@@ -11,7 +11,6 @@ window.BIRTHDAY_SITE = {
     "assets/photos/Weixin Image_20260527131935_184.jpg",
     "assets/photos/Weixin Image_20260527131935_186.jpg",
     "assets/photos/Weixin Image_20260527131935_189.jpg",
-    "assets/photos/Weixin Image_20260527131935_190.jpg",
     "assets/photos/Weixin Image_20260527131935_191.jpg",
     "assets/photos/Weixin Image_20260527131935_192.jpg",
     "assets/photos/Weixin Image_20260527131935_193.jpg",
@@ -31,6 +30,7 @@ window.BIRTHDAY_SITE = {
     "assets/photos/Weixin Image_20260530165356_1304.jpg",
     "assets/photos/Weixin Image_20260530165356_1305.jpg",
     "assets/photos/Weixin Image_20260530165356_1306.jpg",
+    "assets/photos/Weixin Image_20260530202227_190.jpg",
   ],
   gifts: [
     { unlockDate: "2026-06-25T00:00:00+08:00" },
