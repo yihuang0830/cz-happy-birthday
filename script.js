@@ -1,4 +1,4 @@
-import { db, push, onValue, remove } from "./firebase.js";
+import { db, push, onValue, remove, set } from "./firebase.js";
 import { ref } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 
 // ── Countdown ──
@@ -211,18 +211,68 @@ document.getElementById("photo-wall").addEventListener("click", (e) => {
 // ── Gift unlock ──
 (config.gifts || []).forEach((gift, i) => {
   const card = document.getElementById(`gift-${i}`);
-  const dateEl = document.getElementById(`gift-date-${i}`);
   if (!card) return;
 
-  const d = new Date(gift.unlockDate);
-  if (dateEl) {
-    dateEl.textContent = gift.label || `${d.getMonth() + 1}月${d.getDate()}日解锁`;
+  const tasks = gift.tasks || [];
+
+  // Gift with no tasks: simple date unlock
+  if (!tasks.length) {
+    const d = new Date(gift.unlockDate);
+    const dateEl = document.getElementById(`gift-date-${i}`);
+    if (dateEl) dateEl.textContent = gift.label || `${d.getMonth() + 1}月${d.getDate()}日解锁`;
+    if (Date.now() >= d.getTime()) { card.classList.remove("locked"); card.classList.add("unlocked"); }
+    return;
   }
 
-  if (Date.now() >= d.getTime()) {
-    card.classList.remove("locked");
-    card.classList.add("unlocked");
-  }
+  // Gift with tasks — hide static date/icon, render task list
+  const dateEl = document.getElementById(`gift-date-${i}`);
+  const iconEl = document.getElementById(`gift-icon-${i}`);
+  const tasksEl = document.getElementById(`gift-tasks-${i}`);
+  if (dateEl) dateEl.style.display = "none";
+  if (iconEl) iconEl.style.display = "none";
+
+  const now = Date.now();
+
+  tasks.forEach((task, t) => {
+    const taskDate = new Date(task.unlockDate);
+    const revealed = now >= taskDate.getTime();
+    const li = document.createElement("li");
+    li.className = "gift-task" + (revealed ? "" : " mystery");
+    li.dataset.index = t;
+    const dateLabel = `${taskDate.getMonth() + 1}/${taskDate.getDate()}`;
+    li.innerHTML = `
+      <button class="gift-task-check" data-gift="${i}" data-task="${t}" ${!revealed ? "disabled" : ""}>
+        <span class="gift-task-dot"></span>
+      </button>
+      <span class="gift-task-text">${revealed ? escapeHtml(task.text) : "· · ·"}</span>
+      ${!revealed ? `<span class="gift-task-date">${dateLabel}</span>` : ""}
+    `;
+    tasksEl.appendChild(li);
+  });
+
+  // Sync completion state from Firebase
+  const tasksRef = ref(db, `giftTasks/${i}`);
+  onValue(tasksRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    let allDone = true;
+    tasks.forEach((task, t) => {
+      const revealed = now >= new Date(task.unlockDate).getTime();
+      const done = revealed && !!data[t];
+      const li = tasksEl.querySelector(`[data-index="${t}"]`);
+      if (li) li.classList.toggle("done", done);
+      if (!done) allDone = false;
+    });
+    if (allDone) { card.classList.remove("locked"); card.classList.add("unlocked"); }
+  });
+
+  // Toggle task on click
+  tasksEl.addEventListener("click", (e) => {
+    const btn = e.target.closest(".gift-task-check");
+    if (!btn || btn.disabled) return;
+    const t = btn.dataset.task;
+    const li = btn.closest(".gift-task");
+    set(ref(db, `giftTasks/${i}/${t}`), !li.classList.contains("done"));
+  });
 });
 
 // ── Background music ──
@@ -266,11 +316,11 @@ const jerryHint = document.getElementById("jerry-hint");
 const jerryMood = document.getElementById("jerry-mood");
 
 const jerryStates = [
-  { src: "assets/jerry/wave.png",     hint: "你好你好！",       mood: "心情值 ❤️❤️❤️❤️❤️" },
-  { src: "assets/jerry/surprise.png", hint: "哎呀～",           mood: "心情值 ❤️❤️❤️❤️❤️" },
-  { src: "assets/jerry/think.png",    hint: "让我想想…",        mood: "心情值 ❤️❤️❤️❤️" },
-  { src: "assets/jerry/sleep.png",    hint: "z z z…",           mood: "心情值 ❤️❤️❤️" },
-  { src: "assets/jerry/love.png",     hint: "生日快乐！",       mood: "心情值 ❤️❤️❤️❤️❤️" },
+  { src: "assets/jerry/wave.png",     hint: "你好你好！",       mood: "攻略值 ❤️❤️❤️❤️❤️" },
+  { src: "assets/jerry/surprise.png", hint: "哎呀～",           mood: "攻略值 ❤️❤️❤️❤️❤️" },
+  { src: "assets/jerry/think.png",    hint: "让我想想…",        mood: "攻略值 ❤️❤️❤️❤️" },
+  { src: "assets/jerry/sleep.png",    hint: "z z z…",           mood: "攻略值 ❤️❤️❤️" },
+  { src: "assets/jerry/love.png",     hint: "生日快乐！",       mood: "攻略值 ❤️❤️❤️❤️❤️" },
 ];
 let jerryIdx = -1;
 let jerryTimer = null;
@@ -290,7 +340,7 @@ if (jerryWrap) {
     jerryTimer = setTimeout(() => {
       jerrySprite.src = "assets/jerry/idle.png";
       jerryHint.textContent = "点我试试";
-      jerryMood.textContent = "心情值 ❤️❤️❤️❤️❤️";
+      jerryMood.textContent = "攻略值 ❤️❤️❤️❤️❤️";
       jerryIdx = -1;
     }, 3000);
   });

@@ -33,7 +33,14 @@ window.BIRTHDAY_SITE = {
     "assets/photos/Weixin Image_20260530202227_190.jpg",
   ],
   gifts: [
-    { unlockDate: "2026-06-25T00:00:00+08:00" },
+    {
+      tasks: [
+        { unlockDate: "2026-06-05T00:00:00+08:00", text: "请我喝一杯奶茶" },
+        { unlockDate: "2026-06-12T00:00:00+08:00", text: "???" },
+        { unlockDate: "2026-06-18T00:00:00+08:00", text: "???" },
+        { unlockDate: "2026-06-23T00:00:00+08:00", text: "???" },
+      ],
+    },
     { unlockDate: "2026-08-09T00:00:00+08:00", label: "8月·待定解锁" },
   ],
 };
