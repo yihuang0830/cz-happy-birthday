@@ -45,36 +45,15 @@
         </div>
       </section>
 
-      <!-- Page 2: Two-column todo -->
+      <!-- Page 2: Chat -->
       <section class="page page-2">
         <div class="page-2-content">
-          <p class="page-label">计划</p>
-
-          <div class="todo-columns">
-            <div class="todo-col">
-              <h3 class="col-name">e</h3>
-              <ul class="todo-list" id="todo-list-e"></ul>
-              <form class="todo-form" data-owner="e" autocomplete="off">
-                <input class="todo-input" type="text" placeholder="添加…" maxlength="60" />
-                <button class="todo-submit" type="submit">+</button>
-              </form>
-            </div>
-
-            <div class="col-divider" aria-hidden="true"></div>
-
-            <div class="todo-col">
-              <h3 class="col-name">jerry</h3>
-              <ul class="todo-list" id="todo-list-jerry"></ul>
-              <form class="todo-form" data-owner="jerry" autocomplete="off">
-                <input class="todo-input" type="text" placeholder="添加…" maxlength="60" />
-                <button class="todo-submit" type="submit">+</button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <div class="scroll-hint" aria-hidden="true">
-          <span class="scroll-hint-line"></span>
+          <p class="page-label">聊天</p>
+          <div class="chat-messages" id="chat-messages"></div>
+          <form class="chat-form" id="chat-form" autocomplete="off">
+            <input class="chat-input" id="chat-input" type="text" placeholder="说点什么…" maxlength="100" />
+            <button class="chat-submit" type="submit">↑</button>
+          </form>
         </div>
       </section>
 
@@ -86,7 +65,7 @@
             <div class="jerry-sprite-wrap">
               <img class="jerry-sprite" id="jerry-sprite" src="assets/jerry/idle.png" alt="阿洲">
             </div>
-            <p class="jerry-hint" id="jerry-hint">点我试试</p>
+            <p class="jerry-hint" id="jerry-hint">点俺试试</p>
           </div>
           <p class="jerry-mood" id="jerry-mood">攻略值 ❤️❤️❤️❤️❤️</p>
         </div>
@@ -159,24 +138,8 @@
 
     </div>
 
-    <button class="sidebar-trigger" id="sidebar-trigger" aria-label="已完成">已完成</button>
 
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <span class="sidebar-title">已完成</span>
-        <button class="sidebar-close" id="sidebar-close" aria-label="关闭">×</button>
-      </div>
-      <div class="sidebar-section">
-        <p class="sidebar-owner">e</p>
-        <ul class="completed-list" id="completed-list-e"></ul>
-      </div>
-      <div class="sidebar-section">
-        <p class="sidebar-owner">jerry</p>
-        <ul class="completed-list" id="completed-list-jerry"></ul>
-      </div>
-    </aside>
-
-    <!-- Background music -->
+<!-- Background music -->
     <audio id="bg-music" loop src="assets/M500002LTSgE0dvPRS.mp3"></audio>
     <button class="music-btn" id="music-btn" aria-label="音乐">
       <svg class="music-icon music-icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">

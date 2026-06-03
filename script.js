@@ -58,105 +58,71 @@ function formatTs(ts) {
   return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-// ── Todo list ──
-function makeTodoItem(key, item) {
-  const li = document.createElement("li");
-  li.className = "todo-item";
-  li.dataset.createdat = item.createdAt || "";
-  li.innerHTML = `
-    <button class="todo-check" data-key="${key}" aria-label="标为完成">
-      <span class="check-circle"></span>
-    </button>
-    <div class="todo-body">
-      <span class="todo-text">${escapeHtml(item.text)}</span>
-      <span class="todo-time">${formatTs(item.createdAt)}</span>
-    </div>
-    <button class="todo-delete" data-key="${key}" aria-label="删除">×</button>
-  `;
-  return li;
-}
+// ── Chat ──
+// 把旧的 todos/e 和 todos/jerry 以及新的 chat 消息合并，按时间排序展示
+const chatEl = document.getElementById("chat-messages");
+const chatForm = document.getElementById("chat-form");
+const chatInput = document.getElementById("chat-input");
 
-function initTodoCol(owner) {
-  const listEl = document.getElementById(`todo-list-${owner}`);
-  const form = document.querySelector(`.todo-form[data-owner="${owner}"]`);
-  const input = form.querySelector(".todo-input");
-  const colRef = ref(db, `todos/${owner}`);
+const allMsgs = {};  // id -> { text, createdAt, _path: string }
 
-  onValue(colRef, (snapshot) => {
-    listEl.innerHTML = "";
-    const data = snapshot.val();
-    if (!data) return;
-    Object.entries(data).forEach(([key, item]) => {
-      listEl.appendChild(makeTodoItem(key, item));
-    });
-  });
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text) return;
-    push(colRef, { text, createdAt: Date.now() });
-    input.value = "";
-  });
-
-  listEl.addEventListener("click", async (e) => {
-    const checkBtn = e.target.closest(".todo-check");
-    const deleteBtn = e.target.closest(".todo-delete");
-
-    if (checkBtn) {
-      const key = checkBtn.dataset.key;
-      const li = checkBtn.closest(".todo-item");
-      const text = li.querySelector(".todo-text").textContent;
-      const createdAt = Number(li.dataset.createdat) || Date.now();
-      li.classList.add("completing");
-      await new Promise(r => setTimeout(r, 380));
-      await push(ref(db, `completed/${owner}`), { text, createdAt, completedAt: Date.now() });
-      await remove(ref(db, `todos/${owner}/${key}`));
-    }
-
-    if (deleteBtn) {
-      remove(ref(db, `todos/${owner}/${deleteBtn.dataset.key}`));
-    }
+function renderChat() {
+  if (!chatEl) return;
+  const sorted = Object.values(allMsgs).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+  chatEl.innerHTML = "";
+  sorted.forEach(msg => {
+    const div = document.createElement("div");
+    div.className = "chat-msg";
+    div.innerHTML = `
+      <span class="chat-msg-text">${escapeHtml(msg.text)}</span>
+      <span class="chat-msg-time">${formatTs(msg.createdAt)}</span>
+      <button class="chat-delete" data-path="${msg._path}" aria-label="删除">×</button>
+    `;
+    chatEl.appendChild(div);
   });
 }
 
-initTodoCol("e");
-initTodoCol("jerry");
-
-// ── Completed sidebar ──
+// 读取旧的 todos（保留历史消息）
 ["e", "jerry"].forEach(owner => {
-  const listEl = document.getElementById(`completed-list-${owner}`);
-  onValue(ref(db, `completed/${owner}`), (snapshot) => {
-    listEl.innerHTML = "";
-    const data = snapshot.val();
-    if (!data) {
-      listEl.innerHTML = `<li class="completed-empty">暂无</li>`;
-      return;
-    }
-    Object.entries(data)
-      .sort(([, a], [, b]) => (b.completedAt || 0) - (a.completedAt || 0))
-      .forEach(([, item]) => {
-        const li = document.createElement("li");
-        li.className = "completed-item";
-        li.innerHTML = `
-          <span class="completed-text">${escapeHtml(item.text)}</span>
-          <span class="completed-time">完成于 ${formatTs(item.completedAt)}</span>
-        `;
-        listEl.appendChild(li);
-      });
+  onValue(ref(db, `todos/${owner}`), snapshot => {
+    // 先清掉这个 owner 的旧数据再重新写入，避免已删除的消息残留
+    Object.keys(allMsgs).forEach(k => { if (k.startsWith(`${owner}-`)) delete allMsgs[k]; });
+    const data = snapshot.val() || {};
+    Object.entries(data).forEach(([key, item]) => {
+      allMsgs[`${owner}-${key}`] = { ...item, _path: `todos/${owner}/${key}` };
+    });
+    renderChat();
   });
 });
 
-const sidebar = document.getElementById("sidebar");
-const sidebarTrigger = document.getElementById("sidebar-trigger");
+// 读取新的 chat 消息
+onValue(ref(db, "chat"), snapshot => {
+  Object.keys(allMsgs).forEach(k => { if (k.startsWith("chat-")) delete allMsgs[k]; });
+  const data = snapshot.val() || {};
+  Object.entries(data).forEach(([key, item]) => {
+    allMsgs[`chat-${key}`] = { ...item, _path: `chat/${key}` };
+  });
+  renderChat();
+});
 
-document.getElementById("sidebar-trigger").addEventListener("click", () => sidebar.classList.add("open"));
-document.getElementById("sidebar-close").addEventListener("click", () => sidebar.classList.remove("open"));
+// 删除消息
+if (chatEl) {
+  chatEl.addEventListener("click", e => {
+    const btn = e.target.closest(".chat-delete");
+    if (!btn) return;
+    remove(ref(db, btn.dataset.path));
+  });
+}
 
-// 只在第二页显示「已完成」按钮
-new IntersectionObserver(([e]) => {
-  sidebarTrigger.classList.toggle("visible", e.isIntersecting);
-}, { threshold: 0.5 }).observe(document.querySelector(".page-2"));
+if (chatForm) {
+  chatForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const text = chatInput.value.trim();
+    if (!text) return;
+    push(ref(db, "chat"), { text, createdAt: Date.now() });
+    chatInput.value = "";
+  });
+}
 
 // ── Photo wall ──
 const photos = config.photos || [];

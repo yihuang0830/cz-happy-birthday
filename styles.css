@@ -147,10 +147,12 @@ body::before {
 .is-birthday .birthday-title { display: block; }
 .is-birthday .message { color: #aaa; margin-top: 0; }
 
-/* ── Page 2: Todo ── */
+/* ── Page 2: Chat ── */
 .page-2 {
-  justify-content: center;
+  justify-content: flex-start;
   overflow-y: auto;
+  padding-top: 64px;
+  padding-bottom: 64px;
 }
 
 .page-2-content {
@@ -158,10 +160,91 @@ body::before {
   transform: translateY(28px);
   transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-  width: min(760px, 100%);
+  width: min(560px, 100%);
   padding: 0 8px;
+  display: flex;
+  flex-direction: column;
 }
 .page-2-content.visible { opacity: 1; transform: translateY(0); }
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-msg {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.chat-msg:first-child { border-top: 1px solid #f0f0f0; }
+
+.chat-msg-text {
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: #555;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.chat-msg-time {
+  font-size: 0.62rem;
+  color: #ccc;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.chat-form {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  margin-top: 4px;
+}
+
+.chat-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #555;
+  font-size: 0.88rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  padding: 16px 0;
+  font-family: inherit;
+}
+.chat-input::placeholder { color: #ddd; }
+
+.chat-submit {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.chat-submit:hover { color: #888; }
+
+.chat-delete {
+  background: none;
+  border: none;
+  color: #ddd;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.2s;
+  opacity: 0;
+}
+.chat-msg:hover .chat-delete { opacity: 1; }
+.chat-delete:hover { color: #999; }
 
 .page-label {
   font-size: 0.65rem;
