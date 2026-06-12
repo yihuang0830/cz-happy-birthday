@@ -722,6 +722,13 @@ body::before {
   transition: opacity 0.4s;
 }
 
+.jerry-offline {
+  font-size: 1.1rem;
+  color: #888;
+  letter-spacing: 0.05em;
+  margin-top: 12px;
+}
+
 /* ── Page 5: Gifts ── */
 .page-3, .page-4, .page-5 { justify-content: center; }
 
