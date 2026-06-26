@@ -801,6 +801,13 @@ body::before {
   margin: 0;
 }
 
+.gift-tasks-hint {
+  font-size: 0.62rem;
+  color: #bbb;
+  letter-spacing: 0.04em;
+  margin: 12px 0 0 0;
+}
+
 .gift-unlocked-hint {
   font-size: 0.65rem;
   letter-spacing: 0.18em;
