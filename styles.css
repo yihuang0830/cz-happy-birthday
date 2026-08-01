@@ -934,3 +934,15 @@ body::before {
   .gifts { grid-template-columns: 1fr; gap: 16px; }
   .gift-card { padding: 36px 24px; }
 }
+
+/* ── 临时：只显示倒计时页，其余全部隐藏 ──
+   想恢复的话，把下面这一整块删掉就行，HTML / JS 都没动过 */
+.page-2,
+.page-3,
+.page-jerry,
+.page-photos {
+  display: none;
+}
+
+/* 后面已经没有页面可以滚了，往下滑的箭头提示也一起收起来 */
+.scroll-hint { display: none; }
