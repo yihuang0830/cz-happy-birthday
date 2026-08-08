@@ -1,1 +1,5 @@
 .DS_Store
+
+# 源视频只是拿来抽音轨的，几十 MB，不进仓库
+assets/*.mp4
+assets/*.mov
