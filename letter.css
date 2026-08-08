@@ -1,0 +1,582 @@
+/* ════════════════════════════════════════════
+   一封信 · The Letter
+   独立样式表，不依赖 styles.css
+   ════════════════════════════════════════════ */
+
+.letter {
+  --ink:        #2a241c;   /* 正文墨色 */
+  --ink-soft:   #6b6051;   /* 次要文字 */
+  --ink-faint:  #a3957e;   /* 页码、提示 */
+  --paper:      #f7f0e2;   /* 信纸 */
+  --paper-edge: #e9dec8;   /* 信纸暗部 */
+  --wax:        #8c3b2e;   /* 火漆红 */
+  --gold:       #b08d57;   /* 烫金 */
+
+  --serif-cn: "Noto Serif SC", "Songti SC", "STSong", "Source Han Serif SC",
+              "SimSun", "Times New Roman", serif;
+  --serif-en: "Cormorant Garamond", "Baskerville", "Times New Roman", serif;
+
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow: hidden;
+  font-family: var(--serif-cn);
+  color: var(--ink);
+
+  background:
+    radial-gradient(120% 90% at 50% 42%, #29211a 0%, #191410 45%, #0e0b08 100%),
+    #0e0b08;
+}
+
+/* 一层极淡的颗粒，让暗背景不那么"数码" */
+.letter::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ══════════ 一、信封 ══════════ */
+
+.envelope-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+  cursor: pointer;
+  perspective: 1400px;
+  transition: opacity 0.8s ease, transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: env-enter 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes env-enter {
+  from { opacity: 0; transform: translateY(26px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+.envelope {
+  position: relative;
+  width: min(360px, 78vw);
+  aspect-ratio: 3 / 2;
+  transform-style: preserve-3d;
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.55));
+}
+
+/* 信封主体 */
+.env-body {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 3px;
+  background:
+    linear-gradient(160deg, var(--paper) 0%, var(--paper-edge) 100%);
+}
+
+/* 正面那两道折痕（左右两片纸的接缝） */
+.env-body::before,
+.env-body::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+}
+.env-body::before {
+  background:
+    linear-gradient(to bottom right, transparent calc(50% - 0.5px), rgba(0,0,0,0.07) 50%, transparent calc(50% + 0.5px));
+}
+.env-body::after {
+  background:
+    linear-gradient(to bottom left, transparent calc(50% - 0.5px), rgba(0,0,0,0.07) 50%, transparent calc(50% + 0.5px));
+}
+
+/* 信纸探头：开封时从信封里升起来 */
+.env-paper {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 8%;
+  height: 76%;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #fffaf0, var(--paper));
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.18);
+  transform: translateY(0);
+  transition: transform 0.9s cubic-bezier(0.3, 0.8, 0.3, 1);
+  z-index: 1;
+}
+
+/* 上封盖：闭合时向下盖住，开封时向上翻 180° */
+.env-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 62%;
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transform-style: preserve-3d;
+  transition: transform 1s cubic-bezier(0.6, 0, 0.3, 1);
+  z-index: 3;
+}
+.env-flap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(175deg, #f9f3e6 0%, #e5d9c1 100%);
+  box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* 火漆印 */
+.env-seal {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #f3ded6;
+  background: radial-gradient(circle at 34% 30%, #b04b3a 0%, var(--wax) 48%, #61231c 100%);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 2px 3px rgba(255, 255, 255, 0.28),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+  transition: transform 0.55s cubic-bezier(0.5, -0.4, 0.3, 1.4), opacity 0.55s ease;
+}
+
+.env-to {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: #cbb894;
+  font-weight: 400;
+}
+
+.env-hint {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  color: #6f6350;
+  animation: breathe 3.2s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+/* —— 开封中 —— */
+.letter.is-opening .env-seal { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+.letter.is-opening .env-flap { transform: rotateX(-175deg); }
+/* 信纸升起来的时候要盖在信封前面，否则会被封盖挡住 */
+.letter.is-opening .env-paper { transform: translateY(-46%); transition-delay: 0.45s; z-index: 5; }
+.letter.is-opening .env-hint { opacity: 0; transition: opacity 0.3s; animation: none; }
+.letter.is-opening .envelope { transform: translateY(-8px) scale(1.03); }
+
+/* —— 开封完成，信封退场 —— */
+.letter.is-open .envelope-scene {
+  opacity: 0;
+  transform: scale(1.35);
+  pointer-events: none;
+}
+
+/* ══════════ 二、阅读器 ══════════ */
+
+.reader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 3vh, 30px);
+  padding: clamp(24px, 5vh, 52px) 16px clamp(20px, 4vh, 36px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.9s ease 0.15s;
+}
+.letter.is-open .reader {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 顶部进度线 */
+.progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+}
+.progress-bar {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, transparent, var(--gold));
+  transition: width 0.7s cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+
+/* 左右两侧的隐形点击区（只在信纸之外） */
+.edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: max(5vw, 40px);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+}
+.edge-prev { left: 0; }
+.edge-next { right: 0; }
+
+/* —— 信纸舞台 —— */
+.stage {
+  position: relative;
+  width: min(680px, 94vw);
+  flex: 1 1 auto;
+  max-height: 820px;
+  perspective: 2200px;
+  z-index: 5;
+}
+
+.sheet {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(30px, 5.2vw, 58px) clamp(26px, 5vw, 60px) clamp(22px, 4vw, 40px);
+  border-radius: 2px 3px 3px 2px;
+  transform-origin: left center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.055) 0px, rgba(0,0,0,0) 26px),
+    linear-gradient(155deg, #fdf8ec 0%, var(--paper) 42%, #f0e7d4 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 240, 214, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.42);
+  transition:
+    transform 0.9s cubic-bezier(0.36, 0.06, 0.16, 1),
+    opacity 0.35s ease 0.42s;
+}
+
+/* 纸纹 */
+.sheet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='5'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23p)' opacity='0.16'/%3E%3C/svg%3E");
+}
+
+/* 三种状态：当前 / 已翻过 / 还没翻到 */
+.sheet[data-state="current"] { transform: rotateY(0deg);    opacity: 1; z-index: 30; }
+.sheet[data-state="past"]    { transform: rotateY(-168deg); opacity: 0; z-index: 40; pointer-events: none; }
+.sheet[data-state="future"]  { transform: rotateY(0deg);    opacity: 1; z-index: 10; pointer-events: none; }
+
+/* —— 页眉 —— */
+.sheet-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  padding-bottom: 16px;
+  margin-bottom: clamp(20px, 3.4vh, 34px);
+  border-bottom: 1px solid rgba(140, 59, 46, 0.16);
+}
+.sheet-kicker {
+  font-family: var(--serif-en);
+  font-size: 0.66rem;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.sheet-no {
+  font-size: 0.92rem;
+  letter-spacing: 0.2em;
+  color: var(--wax);
+  opacity: 0.7;
+}
+
+/* —— 正文 —— */
+.sheet-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  font-size: clamp(0.94rem, 2.9vw, 1.06rem);
+  line-height: 2.15;
+  letter-spacing: 0.035em;
+  text-align: justify;
+  color: var(--ink);
+}
+.sheet-body::-webkit-scrollbar { display: none; }
+
+.sheet-body p {
+  margin: 0 0 1.15em;
+  text-indent: 2em;
+}
+
+/* 抬头：To 必胜客自助餐 */
+.salutation {
+  text-indent: 0 !important;
+  font-size: 1.16em;
+  letter-spacing: 0.06em;
+  margin-bottom: 1.5em !important;
+  color: var(--ink);
+}
+.salutation em {
+  font-style: normal;
+  font-family: var(--serif-en);
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  margin-right: 0.4em;
+}
+
+/* 内容可滚动时，底部给一道渐隐 + 小箭头 */
+.sheet-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(22px, 4vw, 40px);
+  height: 56px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: linear-gradient(to top, #f1e8d5 8%, rgba(241, 232, 213, 0));
+  border-radius: 0 0 3px 3px;
+}
+.sheet-fade::after {
+  content: '⌄';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 15px;
+  color: var(--ink-faint);
+  animation: nudge 1.9s ease-in-out infinite;
+}
+.sheet.is-scrollable .sheet-fade { opacity: 1; }
+.sheet.is-bottom .sheet-fade { opacity: 0; }
+
+@keyframes nudge {
+  0%, 100% { transform: translate(-50%, 0); opacity: 0.4; }
+  50%      { transform: translate(-50%, 3px); opacity: 0.9; }
+}
+
+/* ══════════ 三、特殊页面 ══════════ */
+
+/* 谜语页 */
+.verse {
+  display: grid;
+  align-content: center;
+  text-align: center;
+  line-height: 2.15;
+  font-size: clamp(0.86rem, 2.7vw, 1.02rem);
+}
+/* safe center：内容超出一屏时自动退回顶部对齐，不会把开头几行切掉 */
+@supports (align-content: safe center) {
+  .verse { align-content: safe center; }
+}
+.verse p {
+  text-indent: 0;
+  margin: 0;
+}
+.verse .verse-lead {
+  margin-bottom: 1.4em;
+  color: var(--wax);
+  letter-spacing: 0.16em;
+}
+.verse .verse-line {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.sheet[data-state="current"] .verse .verse-line {
+  animation: verse-in 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 0.13s + 0.35s);
+}
+@keyframes verse-in {
+  to { opacity: 1; transform: none; }
+}
+
+/* 礼物清单页 */
+.gift-lead {
+  text-indent: 0 !important;
+  color: var(--ink-soft);
+  letter-spacing: 0.05em;
+}
+.gift-roll {
+  list-style: none;
+  margin: 0 0 2.2em;
+  padding: 0;
+  counter-reset: g;
+}
+.gift-roll li {
+  counter-increment: g;
+  position: relative;
+  padding-left: 2.6em;
+  margin-bottom: 0.55em;
+  letter-spacing: 0.04em;
+}
+.gift-roll li::before {
+  content: counter(g, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  font-family: var(--serif-en);
+  font-size: 0.86em;
+  color: var(--wax);
+  opacity: 0.55;
+  letter-spacing: 0.08em;
+}
+
+.closing {
+  text-indent: 0 !important;
+  margin-top: 2.4em !important;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+}
+.signature {
+  text-indent: 0 !important;
+  text-align: right;
+  margin: 0.6em 0 0 !important;
+  font-size: 1.5em;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em !important;
+  color: var(--ink);
+}
+.sheet[data-state="current"] .signature {
+  animation: sig-in 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s both;
+}
+@keyframes sig-in {
+  from { opacity: 0; letter-spacing: 0.9em; }
+  to   { opacity: 1; letter-spacing: 0.34em; }
+}
+
+/* ══════════ 四、翻页控制 ══════════ */
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  flex: 0 0 auto;
+  z-index: 6;
+}
+
+.nav-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(176, 141, 87, 0.28);
+  background: transparent;
+  color: #c3ab84;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.25s, color 0.25s, background 0.25s, opacity 0.25s;
+}
+.nav-btn:hover:not(:disabled) {
+  border-color: rgba(176, 141, 87, 0.7);
+  color: #e6d5b4;
+  background: rgba(176, 141, 87, 0.09);
+}
+.nav-btn:disabled { opacity: 0.16; cursor: default; }
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.dot {
+  width: 5px;
+  height: 5px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(203, 184, 148, 0.26);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s, width 0.3s;
+}
+.dot:hover { background: rgba(203, 184, 148, 0.55); }
+.dot.active {
+  background: var(--gold);
+  width: 16px;
+  border-radius: 3px;
+}
+
+/* ══════════ 五、音乐按钮（改成暗色主题） ══════════ */
+
+.letter ~ .music-btn,
+body.letter-mode .music-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(176, 141, 87, 0.25);
+  color: rgba(203, 184, 148, 0.55);
+  box-shadow: none;
+  z-index: 70;
+}
+body.letter-mode .music-btn:hover {
+  border-color: rgba(176, 141, 87, 0.6);
+  color: #e6d5b4;
+  background: rgba(176, 141, 87, 0.1);
+}
+body.letter-mode .music-btn.playing { color: #cbb894; }
+
+/* ══════════ 六、小屏 ══════════ */
+
+@media (max-width: 560px) {
+  .stage { perspective: 1200px; max-height: none; }
+  .sheet-body { line-height: 2.05; }
+  .env-seal { width: 62px; height: 62px; font-size: 25px; }
+  .envelope-scene { gap: 26px; }
+  .edge { width: 34px; }
+  .reader { gap: 16px; padding: 22px 10px 22px; }
+  /* 小屏上音乐按钮会顶到翻页键，缩一点、往边上让一让 */
+  body.letter-mode .music-btn {
+    width: 32px; height: 32px; left: 14px; bottom: 16px;
+  }
+  body.letter-mode .music-icon { width: 13px; height: 13px; }
+}
+
+@media (max-height: 680px) {
+  .sheet { padding-top: clamp(22px, 4vw, 36px); }
+  .sheet-head { margin-bottom: 16px; padding-bottom: 12px; }
+}
+
+/* ══════════ 七、减少动效偏好 ══════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .letter *,
+  .letter *::before,
+  .letter *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+  }
+  .sheet[data-state="past"] { transform: none; }
+}
