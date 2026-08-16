@@ -5,7 +5,9 @@
 const letter      = document.getElementById("letter");
 const envelope    = document.getElementById("envelope-scene");
 const stage       = document.getElementById("stage");
-const sheets      = Array.from(stage.querySelectorAll(".sheet"));
+// 只认没被 CSS 藏起来的信纸：想增减页面，改 CSS 就行，这里不用动
+const sheets      = Array.from(stage.querySelectorAll(".sheet"))
+                         .filter(s => getComputedStyle(s).display !== "none");
 const dotsWrap    = document.getElementById("dots");
 const btnPrev     = document.getElementById("btn-prev");
 const btnNext     = document.getElementById("btn-next");
@@ -16,6 +18,14 @@ const progressBar = document.getElementById("progress-bar");
 let current = 0;
 let opened = false;
 let turning = false;
+
+// 只有一页的时候，页码圆点、翻页箭头、进度条都没有意义，收起来
+if (sheets.length <= 1) {
+  document.querySelector(".controls").style.display = "none";
+  document.querySelector(".progress").style.display = "none";
+  edgePrev.style.display = "none";
+  edgeNext.style.display = "none";
+}
 
 // ── 生成页码圆点 ──
 sheets.forEach((_, i) => {

@@ -568,7 +568,37 @@ body.letter-mode .music-btn.playing { color: #cbb894; }
   .sheet-head { margin-bottom: 16px; padding-bottom: 12px; }
 }
 
-/* ══════════ 七、减少动效偏好 ══════════ */
+/* ══════════ 七、临时：只留「寒假见」 ══════════
+   想把七页信放回来，删掉下面这一整块就行，信的 HTML 一个字都没动。
+   letter.js 只认「没被隐藏的」信纸，所以页码圆点、翻页键会自动跟着变。 */
+
+.sheet--letter { display: none; }
+
+.sheet--brief {
+  align-items: center;
+  justify-content: center;
+  padding: clamp(30px, 5vw, 58px);
+}
+
+.brief-word {
+  margin: 0;
+  font-size: clamp(2.4rem, 11vw, 4.4rem);
+  line-height: 1.5;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* 等信封开了才起笔：字距由宽收拢到正常，像慢慢写下来 */
+.letter.is-open .sheet[data-state="current"] .brief-word {
+  animation: brief-in 2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.45s both;
+}
+
+@keyframes brief-in {
+  from { opacity: 0; letter-spacing: 1.1em; text-indent: 1.1em; }
+  to   { opacity: 1; letter-spacing: 0.42em; text-indent: 0.42em; }
+}
+
+/* ══════════ 八、减少动效偏好 ══════════ */
 
 @media (prefers-reduced-motion: reduce) {
   .letter *,
